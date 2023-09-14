@@ -64,8 +64,8 @@ with st.sidebar:
     chosen_dataset = dataset_container.radio(":bar_chart: Choose your data:",datasets.keys(),index=index_no)
 
 
-#langchain code
-key=os.environ["OPENAI_API_KEY"] = "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"
+#insert your api key below
+key=os.environ["OPENAI_API_KEY"] = ""
 
 def prepare_Documents(input_Documents):
     # We need to split the text that we read into smaller chunks so that during information retreival we don't hit the
