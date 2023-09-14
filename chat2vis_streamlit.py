@@ -23,9 +23,8 @@ available_models = {"ChatGPT-3.5": "gpt-3.5-turbo","GPT-3": "text-davinci-003",}
 # List to hold datasets
 if "datasets" not in st.session_state:
     datasets = {}
-    # Preload datasets
-    datasets["Health"] = pd.read_csv("health.csv")
-    datasets["Car_Sales"] = pd.read_csv("car_sales.csv")
+    # Preload your datasets below
+    datasets[""] = pd.read_csv("")
     st.session_state["datasets"] = datasets
 else:
     # use the list already loaded
