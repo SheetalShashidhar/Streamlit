@@ -1,152 +1,106 @@
-Here is the documentation in normal text format:
+# API Documentation
 
----
+## Endpoint: /getFavorites
 
-**1. Add Domain Knowledge**
+**Description:**
+Retrieves favorite questions from the `favorites.json` file.
 
-**Endpoint:** `POST /addDomainKnowledge`  
-**Description:** Adds a new entry to the domain knowledge base. If the entry already exists, it returns an error. Updates the vector store after adding the entry.  
-**Expected Input:** 
-- Body: 
-  - `description` (string): The description to be added to the domain knowledge base.  
-  - Data Type: `DomainKnowledgeEntry`  
-**Output:** 
-- Status Code: `200 OK`  
-- Body: 
-  - `status` (string): "success"
-  - `message` (string): "Successfully added to domain knowledge base"
+**Method:** GET
 
-**Error Handling:**
-- Status Code: `400 Bad Request`  
-- Detail: "Entry already exists in the knowledge base"
+**Expected Input:** None
 
----
+**Output:**
+- **Status Code:** 200
+- **Response Model:** `FavoriteQuestions`
+  - **Datatype:** JSON
+  - **Content:**
+    - `questions`: dict
 
-**2. Delete Domain Knowledge**
+**Error Responses:**
+- **Status Code:** 404
+- **Detail:** "No favorites found"
 
-**Endpoint:** `DELETE /deleteDomainKnowledge`  
-**Description:** Deletes an existing entry from the domain knowledge base. Updates the vector store after deletion.  
-**Expected Input:** 
-- Body: 
-  - `description` (string): The description to be deleted from the domain knowledge base.  
-  - Data Type: `DomainKnowledgeEntry`  
-**Output:** 
-- Status Code: `200 OK`  
-- Body: 
-  - `status` (string): "success"
-  - `message` (string): "Successfully deleted from domain knowledge base"
+## Endpoint: /addFavorites
 
----
+**Description:**
+Adds a question to the list of favorite questions.
 
-**3. Display Domain Knowledge**
+**Method:** POST
 
-**Endpoint:** `GET /displayDomainKnowledge`  
-**Description:** Retrieves and displays all entries from the domain knowledge base.  
-**Expected Input:** None  
-**Output:** 
-- Status Code: `200 OK`  
-- Body: 
-  - `status` (string): "success"
-  - `data` (array of strings): List of domain knowledge entries
+**Expected Input:**
+- **Request Body:** `Question`
+  - **Datatype:** JSON
+  - **Content:**
+    - `question`: str
+    - `sql_query`: dict
+    - `history`: list of dicts
 
----
+**Output:**
+- **Status Code:** 200
+- **Content:**
+  - `message`: str
 
-**4. Add User Instruction**
+## Endpoint: /deleteFavorites
 
-**Endpoint:** `POST /addUserInstruction`  
-**Description:** Adds a new user instruction to the `user_instruct.json` file. If the file does not exist, it is created.  
-**Expected Input:** 
-- Body: 
-  - `question` (string): The question for the instruction.
-  - `instruction` (string): The instruction text.  
-  - Data Type: `Instruction`  
-**Output:** 
-- Status Code: `200 OK`  
-- Body: 
-  - `status` (string): "success"
-  - `message` (string): "Successfully added instruction"
+**Description:**
+Removes a question from the list of favorite questions.
 
----
+**Method:** DELETE
 
-**5. Display Admin Instructions**
+**Expected Input:**
+- **Query Parameter:** `question`
+  - **Datatype:** str
 
-**Endpoint:** `GET /displayAdminInstructions`  
-**Description:** Retrieves and displays all admin instructions from the `admin_instructions.json` file.  
-**Expected Input:** None  
-**Output:** 
-- Status Code: `200 OK`  
-- Body: 
-  - `status` (string): "success"
-  - `data` (object): Dictionary of admin instructions (question as key and instruction as value)
+**Output:**
+- **Status Code:** 200
+- **Content:**
+  - `message`: str
 
----
+## Endpoint: /generateAnswer
 
-**6. Delete Admin Instruction**
+**Description:**
+Generates an answer for a given question, including executing SQL queries and processing the result.
 
-**Endpoint:** `DELETE /deleteAdminInstruction`  
-**Description:** Deletes a specific admin instruction from the `admin_instructions.json` file.  
-**Expected Input:** 
-- Query Parameter: 
-  - `question` (string): The question of the instruction to be deleted.  
-  - Data Type: `str`  
-**Output:** 
-- Status Code: `200 OK`  
-- Body: 
-  - `status` (string): "success"
-  - `message` (string): "Successfully deleted instruction"
+**Method:** POST
 
-**Error Handling:**
-- Status Code: `404 Not Found`  
-- Detail: "Instruction not found" or "Instructions file not found"
+**Expected Input:**
+- **Request Body:** `Question`
+  - **Datatype:** JSON
+  - **Content:**
+    - `question`: str
+    - `sql_query`: dict
+    - `history`: list of dicts
 
----
+**Output:**
+- **Status Code:** 200
+- **Content:**
+  - `answer`: str
+  - `sql_query`: dict
+  - `history`: list of dicts
 
-**7. Get Pending Instructions**
+## Endpoint: /feedback
 
-**Endpoint:** `GET /getPendingInstructions`  
-**Description:** Retrieves and displays all pending user instructions from the `user_instruct.json` file.  
-**Expected Input:** None  
-**Output:** 
-- Status Code: `200 OK`  
-- Body: 
-  - `status` (string): "success"
-  - `data` (object): Dictionary of pending user instructions (question as key and instruction as value)
+**Description:**
+Handles user feedback for generated answers and SQL queries.
 
----
+**Method:** POST
 
-**8. Accept Pending Instruction**
+**Expected Input:**
+- **Request Body:** `FeedbackRequest`
+  - **Datatype:** JSON
+  - **Content:**
+    - `user_query`: str
+    - `sql`: str
+    - `response`: str
+    - `feedback_received`: bool
+    - `feedback_type`: str
+    - `comment`: str
 
-**Endpoint:** `POST /acceptPendingInstruction`  
-**Description:** Moves a pending instruction from `user_instruct.json` to `admin_instructions.json`.  
-**Expected Input:** 
-- Body: 
-  - `question` (string): The question for the instruction.
-  - `instruction` (string): The instruction text.  
-  - Data Type: `Instruction`  
-**Output:** 
-- Status Code: `200 OK`  
-- Body: 
-  - `status` (string): "success"
-  - `message` (string): "Successfully accepted and added instruction"
+**Output:**
+- **Status Code:** 200
+- **Content:**
+  - `message`: str
 
----
-
-**9. Reject Pending Instruction**
-
-**Endpoint:** `DELETE /rejectPendingInstruction`  
-**Description:** Removes a pending instruction from `user_instruct.json` without adding it to `admin_instructions.json`.  
-**Expected Input:** 
-- Query Parameter: 
-  - `question` (string): The question of the instruction to be rejected.  
-  - Data Type: `str`  
-**Output:** 
-- Status Code: `200 OK`  
-- Body: 
-  - `status` (string): "success"
-  - `message` (string): "Successfully rejected instruction"
-
-**Error Handling:**
-- Status Code: `404 Not Found`  
-- Detail: "Instruction not found" or "User instructions file not found"
-
----
+**Error Responses:**
+- **Status Code:** 500
+- **Detail:** "Error processing feedback: {error message}"
